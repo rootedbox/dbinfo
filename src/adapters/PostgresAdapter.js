@@ -25,11 +25,11 @@ class PostgresAdapter extends DatabaseAdapter {
     const query = `
       SELECT table_name 
       FROM information_schema.tables 
-      WHERE table_schema = 'public' AND table_catalog = $1;
+      WHERE table_schema = $2 AND table_catalog = $1;
     `;
     const client = await this.pool.connect();
     try {
-      const res = await client.query(query, [this.config.database]);
+      const res = await client.query(query, [this.config.database, this.config.schema]);
       return res.rows.map((row) => row.table_name);
     } finally {
       client.release();
